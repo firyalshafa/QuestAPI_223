@@ -5,15 +5,21 @@ import com.example.praktikum12.modeldata.DataSiswa
 import retrofit2.Response
 import retrofit2.Retrofit
 
-interface RepositoryDataSiswa{
+interface RepositoryDataSiswa {
     suspend fun getDataSiswa(): List<DataSiswa>
-    suspend fun  postDataSiswa(dataSiswa: DataSiswa) : retrofit2.Response<Void>
 
+    suspend fun postDataSiswa(dataSiswa: DataSiswa) : retrofit2.Response<Void>
 }
 
 class JaringanRepositoryDataSiswa(
     private val serviceApiSiswa: ServiceApiSiswa
 ): RepositoryDataSiswa{
     override suspend fun getDataSiswa(): List<DataSiswa> = serviceApiSiswa.getsiswa()
-    override suspend fun postDataSiswa(dataSiswa: DataSiswa): retrofit2.Response<Void> = serviceApiSiswa.postsiswa(dataSiswa)
+    override suspend fun postDataSiswa(dataSiswa: DataSiswa): Response<Void> =
+        serviceApiSiswa.postsiswa(
+            nama = dataSiswa.nama,
+            alamat = dataSiswa.alamat,
+            telpon = dataSiswa.telpon
+        )
+
 }

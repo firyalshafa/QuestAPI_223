@@ -1,7 +1,7 @@
 package com.example.praktikum12.view.route
 
 
-import com.example.belajar.R
+import com.example.praktikum12.R
 
 
 object DestinasiHome : DestinasiNavigasi {
