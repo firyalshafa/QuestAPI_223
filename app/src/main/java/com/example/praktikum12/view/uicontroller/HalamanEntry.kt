@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.praktikum12.modeldata.DetailSiswa
+import com.example.praktikum12.modeldata.UIStateSiswa
 import com.example.praktikum12.view.route.DestinasiEntry
 import kotlinx.coroutines.launch
 
@@ -52,5 +54,13 @@ fun EntrySiswaScreen(
         )
     }
 }
+
+@Composable
+fun EntrySiswaBody(
+    uiStateSiswa: UIStateSiswa,
+    onSiswaValueChange: (DetailSiswa) -> Unit,
+    onSaveClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {}
 
 }
