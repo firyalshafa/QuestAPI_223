@@ -20,3 +20,8 @@ sealed interface StatusUiSiswa {
 
 }
 
+class HomeViewModel(private val repositoryDataSiswa: RepositoryDataSiswa):
+    ViewModel() {
+
+    }
+
