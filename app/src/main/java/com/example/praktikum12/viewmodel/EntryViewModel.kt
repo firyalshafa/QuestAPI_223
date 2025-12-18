@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.praktikum12.modeldata.DetailSiswa
 import com.example.praktikum12.modeldata.UIStateSiswa
 import com.example.praktikum12.repositori.RepositoryDataSiswa
+import okhttp3.Response
 
 class EntryViewModel(private val repositoryDataSiswa: RepositoryDataSiswa):
     ViewModel(){
@@ -24,6 +25,18 @@ class EntryViewModel(private val repositoryDataSiswa: RepositoryDataSiswa):
         uiStateSiswa =
             UIStateSiswa(detailSiswa = detailSiswa, isEntryValid = validasiInput
                 (detailSiswa))
+    }
+
+    suspend fun addSiswa() {
+        if (validasiInput()) {
+            val sip: Response<Void> = repositoryDataSiswa.postDataSiswa(uiStateSiswa
+                .detailSiswa.toDataSiswa())
+            if (sip.isSuccessful){
+                println("Sukses Tambah Data : ${sip.message()}")
+            }else{
+                println("Gagal tambah data : ${sip.errorBody()}")
+            }
+        }
     }
 
 
