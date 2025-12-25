@@ -22,9 +22,11 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope // Penting untuk perbaikan
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -34,9 +36,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.praktikum12.R
 import com.example.praktikum12.modeldata.DataSiswa
+import com.example.praktikum12.view.route.DestinasiDetail
 import com.example.praktikum12.view.uicontroller.provider.PenyediaViewModel
 import com.example.praktikum12.viewmodel.DetailViewModel
 import com.example.praktikum12.viewmodel.StatusUIDetail
+import kotlinx.coroutines.launch // Penting untuk perbaikan
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,9 +50,12 @@ fun DetailSiswaScreen(
     modifier: Modifier = Modifier,
     viewModel: DetailViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ){
+    // Menambahkan CoroutineScope agar bisa memanggil suspend function hapusSatuSiswa
+    val coroutineScope = rememberCoroutineScope()
+
     Scaffold(
         topBar = {
-            CostumTopAppBar(
+            SiswaTopAppBar(
                 title = stringResource(DestinasiDetail.titleRes),
                 canNavigateBack = true,
                 navigateUp = navigateBack
@@ -75,8 +82,11 @@ fun DetailSiswaScreen(
         ItemDetailsBody(
             statusUIDetail = viewModel.statusUIDetail,
             onDelete = {
-                viewModel.hapusSatuSiswa()
-                navigateBack()
+                // Membungkus pemanggilan suspend function ke dalam coroutineScope
+                coroutineScope.launch {
+                    viewModel.hapusSatuSiswa()
+                    navigateBack()
+                }
             },
             modifier = Modifier
                 .padding(innerPadding)
@@ -120,7 +130,13 @@ private fun ItemDetailsBody(
                     )
                 }
             }
-            else -> {}
+            is StatusUIDetail.Loading -> {
+                // Menampilkan tampilan loading jika diperlukan sesuai logika ViewModel
+                Text(text = "Loading...")
+            }
+            is StatusUIDetail.Error -> {
+                Text(text = "Error loading data")
+            }
         }
     }
 }

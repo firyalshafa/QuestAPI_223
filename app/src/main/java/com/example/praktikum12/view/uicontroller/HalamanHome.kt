@@ -36,19 +36,7 @@ fun HomeScreen(
     navigateToItemUpdate: (Int) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
-) {
-    // ✅ AUTO REFRESH setiap balik ke halaman Home
-    val lifecycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                viewModel.loadSiswa()
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-    }
-
+){
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -75,8 +63,10 @@ fun HomeScreen(
         HomeBody(
             statusUiSiswa = viewModel.listSiswa,
             onSiswaClick = navigateToItemUpdate,
-            retryAction = viewModel::loadSiswa,
-            modifier = Modifier.padding(innerPadding)
+            retryAction = { viewModel.loadSiswa() },
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
         )
     }
 }
@@ -90,27 +80,17 @@ fun HomeBody(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
     ) {
         when (statusUiSiswa) {
             is StatusUiSiswa.Loading -> LoadingScreen()
-            is StatusUiSiswa.Success -> {
-                if (statusUiSiswa.siswa.isEmpty()) {
-                    Text(
-                        text = "Tidak ada data siswa",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                } else {
-                    DaftarSiswa(
-                        itemSiswa = statusUiSiswa.siswa,
-                        onSiswaClick = { onSiswaClick(it.id) }
-                    )
-                }
-            }
+            is StatusUiSiswa.Success -> DaftarSiswa(
+                itemSiswa = statusUiSiswa.siswa,
+                onSiswaClick = { onSiswaClick(it.id) }
+            )
             is StatusUiSiswa.Error -> ErrorScreen(
                 retryAction = retryAction,
-                modifier = Modifier.fillMaxSize()
+                modifier = modifier.fillMaxSize()
             )
         }
     }
@@ -118,7 +98,10 @@ fun HomeBody(
 
 @Composable
 fun LoadingScreen(modifier: Modifier = Modifier) {
-    Box(contentAlignment = Alignment.Center, modifier = modifier.fillMaxSize()) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
         Image(
             modifier = Modifier.size(200.dp),
             painter = painterResource(R.drawable.loading_img),
@@ -134,9 +117,9 @@ fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = stringResource(R.string.gagal), modifier = Modifier.padding(16.dp))
+        Text(text = stringResource(id = R.string.gagal), modifier = Modifier.padding(16.dp))
         Button(onClick = retryAction) {
-            Text(stringResource(R.string.retry))
+            Text(stringResource(id = R.string.retry))
         }
     }
 }
@@ -151,7 +134,7 @@ fun DaftarSiswa(
         items(items = itemSiswa, key = { it.id }) { person ->
             ItemSiswa(
                 siswa = person,
-                modifier = Modifier
+                modifier = modifier
                     .padding(dimensionResource(id = R.dimen.padding_small))
                     .clickable { onSiswaClick(person) }
             )
@@ -172,13 +155,18 @@ fun ItemSiswa(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small))
         ) {
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Text(
                     text = siswa.nama,
                     style = MaterialTheme.typography.titleLarge,
                 )
                 Spacer(Modifier.weight(1f))
-                Icon(imageVector = Icons.Default.Phone, contentDescription = null)
+                Icon(
+                    imageVector = Icons.Default.Phone,
+                    contentDescription = null,
+                )
                 Text(
                     text = siswa.telpon,
                     style = MaterialTheme.typography.titleMedium
