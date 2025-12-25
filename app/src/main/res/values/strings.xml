@@ -13,4 +13,14 @@
     <string name="back">Kembali</string>
     <string name="detail_siswa">Detail Siswa</string>
     <string name="no_data">Data tidak ditemukan</string>
+    <string name="edit_siswa">Edit Siswa</string>
+    <string name="delete">Hapus Siswa</string>
+
+    <string name="yes">yes</string>
+
+    <string name="no">no</string>
+
+    <string name="attention">attention)</string>
+
+    <string name="delete_confirm">delete_confirm</string>
 </resources>
