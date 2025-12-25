@@ -8,6 +8,8 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.praktikum12.repositori.AplikasiDataSiswa
+import com.example.praktikum12.viewmodel.DetailViewModel
+import com.example.praktikum12.viewmodel.EditViewModel
 import com.example.praktikum12.viewmodel.EntryViewModel
 import com.example.praktikum12.viewmodel.HomeViewModel
 
@@ -16,13 +18,20 @@ fun CreationExtras.aplikasiDataSiswa(): AplikasiDataSiswa = (
                 AplikasiDataSiswa
         )
 object PenyediaViewModel {
-
-    val Factory =viewModelFactory {
+    val Factory = viewModelFactory {
+        initializer { HomeViewModel(aplikasiDataSiswa().container.repositoryDataSiswa) }
+        initializer { EntryViewModel(aplikasiDataSiswa().container.repositoryDataSiswa) }
         initializer {
-            HomeViewModel(aplikasiDataSiswa().container.repositoryDataSiswa)
+            DetailViewModel(
+                this.createSavedStateHandle(),
+                aplikasiDataSiswa().container.repositoryDataSiswa
+            )
         }
         initializer {
-            EntryViewModel(aplikasiDataSiswa().container.repositoryDataSiswa) }
-
+            EditViewModel(
+                this.createSavedStateHandle(),
+                aplikasiDataSiswa().container.repositoryDataSiswa
+            )
+        }
     }
 }
