@@ -6,5 +6,6 @@ import retrofit2.Response
 import retrofit2.Retrofit
 
 interface RepositoryDataSiswa {
+    suspend fun getDataSiswa() : List<DataSiswa>
 
 }
