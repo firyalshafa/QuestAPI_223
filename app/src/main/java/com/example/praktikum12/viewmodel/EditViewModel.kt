@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.praktikum12.modeldata.DetailSiswa
 import com.example.praktikum12.modeldata.UIStateSiswa
 import com.example.praktikum12.modeldata.toUiStateSiswa
 import com.example.praktikum12.repositori.RepositoryDataSiswa
@@ -29,6 +30,14 @@ RepositoryDataSiswa
         uiStateSiswa =
             UIStateSiswa(detailSiswa = detailSiswa, isEntryValid = validasiInput(detailSiswa))
     }
+
+    private fun validasiInput(uiState: DetailSiswa = uiStateSiswa.detailSiswa ): Boolean {
+        return with(uiState) {
+            nama.isNotBlank() && alamat.isNotBlank() && telpon.isNotBlank()
+        }
+    }
+
+
 
     }
 
