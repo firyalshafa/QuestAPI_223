@@ -5,8 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.praktikum12.modeldata.DataSiswa
 import com.example.praktikum12.repositori.RepositoryDataSiswa
+import kotlinx.coroutines.launch
+import okio.IOException
+import retrofit2.HttpException
 
 
 sealed interface StatusUIDetail {
@@ -25,6 +29,21 @@ RepositoryDataSiswa
 
     init {
         getSatuSiswa()
+    }
+
+    fun getSatuSiswa(){
+        viewModelScope.launch {
+            statusUIDetail = StatusUIDetail.Loading
+            statusUIDetail = try {
+                StatusUIDetail.Success(satusiswa = repositoryDataSiswa.getSatuSiswa(idSiswa))
+            }
+            catch (e: IOException){
+                StatusUIDetail.Error
+            }
+            catch (e: HttpException){
+                StatusUIDetail.Error
+            }
+        }
     }
 
 }
