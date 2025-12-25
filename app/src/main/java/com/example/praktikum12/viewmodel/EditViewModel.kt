@@ -14,4 +14,9 @@ RepositoryDataSiswa
     var uiStateSiswa by mutableStateOf(UIStateSiswa())
         private set
 
+    private val idSiswa: Int = checkNotNull(savedStateHandle[DestinasiDetail.itemIdArg])
+    init {
+
+    }
+
 }
